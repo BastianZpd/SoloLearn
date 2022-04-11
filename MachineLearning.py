@@ -5,6 +5,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 data = [15, 16, 18, 19, 22, 24, 29, 30, 34]
 
@@ -475,6 +476,139 @@ print(model.score(X, Y))
 # worth having a low recall in order to have a ver high precision. In case 2, you would want more of a balance between precision and recall.
 # There's no hard and fast rule on what values of precision and recall you're shooting for. It always depends on the dataset and the application. 
 
+# Accuracy was an appealing metric because it was a single number. Precision and recall are two numbers so it's not always
+#  obvious how to choose between two models if one has a highet precision and the other has a higher recall. The F1 score is
+#  an average of precision and ercall so that we have a single score for our model
+#  Here's the mathematical formula for the F1 score
+#  F1 = 2 * precision*recall / precision+recall 
+#  Let's calculate the F1 score for our model for the Titanic dataset.
+#  We'll use the precision and recall numbers that we previously calculated. the precision is 0.7819 and the recall is 0.6813
+#  2*(o.7819)*(0.6813)/&(0.7819+0.6813) = 0.7281
+#  The F1 score is the harmonic mean of the precision and recall values.
 
+#  Accuracy, precision, recall & F1 score in sklearn
+# Scikit-learn has a function built in for each of the metrics that we have introduced. 
+# We have a separate function for each of the accuracy, precision, recall and F1 score. 
+
+# In order to use them, let's start by recalling our code from the previous module to build a Logistic Regression model.
+# The code reads in the Titanitc dataset from the csv file and puts it in a Pandas DataFrame. Then we create a feature 
+# matrix X and target values Y. we create a Logistic Regression model and fit it to our dataset.
+# Finally, we create a variable y_pred of our predictions
+
+df = pd.read_csv('https://sololearn.com/uploads/files/titanic.csv')
+df['Male'] = df['Sex'] == 'male'
+X = df[['Pclass', 'Male', 'Age', 'Siblings/Spouses', 'Parents/Children', 'Fare']].values
+y = df['Survived'].values
+model = LogisticRegression()
+model.fit(X,Y)
+
+y_pred = model.predict(X)
+
+# Now we're ready to use our metric functions. Let's import them from scikit-learn 
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Each function takes two 1-dimensional numpy arrays: The true values of the target & the predicted values of the target 
+# We have the true values of the target and the predicted values of the target. Thus we can use the metric functions as follows 
+
+print("Accuracy: ", accuracy_score(y, y_pred))
+print("Precision: ", precision_score(y, y_pred))
+print("Recall: ", recall_score(y, y_pred))
+print("F1: ", f1_score(y, y_pred))
+
+# We see that the accuracy is 80% which means that 80% of the model's predictions are correct.
+# The precision is 78%, which we recall is the percent of the model's positive predictions that are correct. 
+# The recall is 68%, which is the percent of the positive cases that the model predicted correctly. 
+# The F1 score is 73%, which is an average of the precision and recall. 
+
+# With a single model, the metric values do not tel us a lot. For some problems a value of 60% is good,
+# and for others a value of 90% is good, depending on the difficulty of the problem. 
+# We will use the metric values to compare different models to pick the best one.
+
+# Scikit-learn has a confusion matrix function that we can use to get the four values in the confusion matrix (truse positives,
+# false positives, false negatives and true negatives). Assuming y is our true target calues and y_pred is the predicted vales,
+# we can use the confusion_matrix as follows:
+
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(y, y_pred))
+
+# Scikit-learn reverses the confusion matrix to show the negative counts first, since negative values correspond to 0
+# and positive to 1, scikit-learn has ordered them in this order. Make sure you double check that you are interpreting the values corectly
+
+# Overfitting
+# So far we've built a model with all of our data and then seen how well it performed on the same data. This is
+# artificially intlating our numbers since our model, in efect, got to see the answers to the quiz before we 
+# gave it the quiz. this can lead to what we call overfitting. Overfitting is when we perform well on the data
+# the model has already seen, but we don't perform well on new data.
+
+# We can visually see an overfit model as follows. The line is too closely trying to get every single datapoint on the correct
+# side of the line but is missing the essence of the data. 
+# The more features we have in our dataset, the more prone we'll be to overfitting
+
+# Training Set and Test Set 
+# To give a model a fair assessment, we'dl ike to know how well our data would perform on data it hasn't seen yet.
+# In action, our model will be making predictions on data we don't know the answer to, so we'd like to evaluate how wel our
+# model does on new data, not just the data it's already seen. To simulate making predictions on new  unseen data, we can break
+# our dataset into a training set anda test set. The training set is used for building the models. 
+# The test set is used for evaluating the models. We split our data before building the model, thuis the model has no knowledge
+# of the test set and we'll be giving it a fair assessment.
+# If our dataset has 200 datapoint in it, breaking it into a training set and test set might look like 150 datapoints
+# for training set and 50 datapoints to test set 
+# A Standard breakdown is to put 70-80% of our data in the training set and 20-30% in the test set. Using less data in
+# the training set means that our model won't have as much data to learn from, so we want to give it as much as possible while
+# still leaving enough for evaluation.
+
+# Training and Testing in Sklearn 
+# Scikit-learn has a function built in for splitting the data into a training set and a test set 
+# Assuming we have a 2-dimensional numpy array  of our features and a 1-dimensional numpy array y of the target, we can use
+# the train_test_split function. It will randomly put each datapoint in either the training set
+# or the test set. By default the training set is 75% of the data and the test set is the remaining 25% of the data 
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y)
+
+# Let's use the shape attribute to see the sizes of our datasets
+print("Whole dataset: ", X.shape, y.shape)
+print("Training set: ", X_train.shape , y_test.shape)
+
+
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv('https://sololearn.com/uploads/files/titanic.csv')
+df['Male'] = df['Sex'] == 'male'
+X = df[['Pclass', 'Male', 'Age', 'Siblings/Spouses', 'Parents/Children', 'Fare']].values
+y = df['Survived'].values
+
+X_train, X_test, y_train, y_test = train_test_split(X,y)
+print("Whole dataset: ", X.shape, y.shape)
+print("Training set: ", X_train.shape , y_train.shape)
+print("Test dataset: ", X_test.shape, y_test.shape)
+
+# We can see that of the 887 datapoints in our dataset, 665 of them are in our training set and 222 are in the test set 
+# Every datapoint from our dataset is used exactly once, either in the training set or the test set 
+# Note that we have 6 features in our datset, so we still have 6 features in botho ur training set and test set
+# We can change the size of our training set by using the train_size parameter. E.g. train_test_split(X,y,train_size=0.6)
+# would put 60% of the data in the training set and 40% in the test set 
+
+# Now that we knot how to split our data into a training set and a test set, we need to modigy how we build 
+# and evaluate the model. All of the model building is done with the training set and all of the evaluation is done with the test set 
+# In the last module, we built a model and evaluated it on the same datset. Now we build the model using the training set 
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+# And we evaluate the model using the test set
+print(model.score(X_test, y_test))
+
+# In fact, all of the metrics we calculate in the previous parts should be calculated on the test set 
+y_pred = model.predict(X_test)
+print("Accuracy: ", accuracy_score(y_test, y_pred))
+print("Precision: ", precision_score(y_test, y_pred))
+print("Recall: ", recall_score(y_test, y_pred))
+print("F1 Score: ", f1_score(y_test, y_pred))
+
+# Our accuracy, precision, recall and F1 score values are actually very similar to the values when we used the entire dataset 
+# This is a sign our model is not overfit
 
 # %%
