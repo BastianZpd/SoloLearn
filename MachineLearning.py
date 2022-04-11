@@ -414,5 +414,67 @@ print(model.score(X, Y))
 # The first an fourth are the datapoins we predicted correctly and the second and third are 
 # the datapoins we predicted incorrectly.
 
+# In our Titanic dataset, we have 887 passengers, 342 survived (positive) and 545 didn't survive (negative). The model we built in the
+# previous module has the following confusion matrix
+
+# Predicted positive - Actual positive = 233
+# Predicted positive - Actual negative = 65
+# Predicted negative - Actual positive = 109
+# Predicted negative - Actual negative = 480
+
+# The PP-AP and PN-AN are the counts of the predictions that we got correct. So of the 342 passengers that survived, 
+# we predicted 233 of them correctly (109 of them incorrectly). Of the 545 passengers that didn't sutvive, we predicted 
+# 480 correctly (65 incorrectly)
+# We can use the confusion matrix to compute the accuracy. As a reminder, the accuracy is the number of datapoints predicted 
+# correctly divided by the total number of datapoints.
+
+# (233+480)/(233+65+109+480) = 713/887 = 80.38%
+
+# This is indeed the same value we got in the previous module.
+# The confusion matrix fully describes how a model performs on a dataset, though is difficult to use to compare models.
+
+# True positives, true negatives, false positives and false negatives.
+# We have names for each square of the confusion matrix 
+# True positive (TP), true negative (TN), false positive (FP), false negative (FN)
+# The terms can be a little hard to keep track of. The way to remember is that the second word is what our prediction is 
+# (positive or negative) and the first word is whether that prediction was correct (true or false).
+# you'll often see the confusion matrix described as follows:
+# TP - FP
+# FN - TN
+
+# Two commonly used metrics for classifitacion are precision and recall. conceptually, precision refers to the percentage of positive results 
+# which are relevant and recall to the percentage of positive cases correctly classified.
+# Both can be defined using wuadrants from the confusion matrix
+
+# Precision is the percent of the model's positive predictions that are correct. We define it as follows:
+# precision = # positives predicted correctly / # positive predictions = TP/TP+FP
+
+# If we look at our confusion matrix for our model for the Titanic dataset, we can calculate the precision. 
+# Precision = 233 / (233 + 65) = 0.7819
+
+# Recall is the percent of positive cases that the model prdicts correctly. Again, we will be using the confusion matrix to compute our result
+# Here we mathematically define the recall:
+# recall = # positives predicted correctly / #positive cases = TP/TP+FN
+
+# Let's calculate the recall for our model for the Titanic dataset.
+# recall = 233/233+109 = 0.6813
+# Recall is a measure of how many of the positive cases the model can recall 
+
+# Precision & Recall Trade-off 
+# We often will be in a situation of choosing between increasing the recall (while lowering the precision) or increasing the precision 
+# (and lowering the recall). It will depend on the situation which we'll want to maximize. 
+
+# For example, let's say we're building a model to predict if a credict card charge is fraudulent. The positive cases for our model
+# are fraudulent charges and the negative cases are legitimate charges.
+# Let's consider two scenarios:
+# 1. If we predict the charge is fraudulent, we'll reject the charge
+# 2. If we predict the charge is fraudulent, we'll call the customer to confirm the charge.
+# In case 1, it's a huge inconvenience for the customer when the model predicts fraud incorrectly (a false positive). In case4 2, a false positive
+# is a minor inconvenience for the costumer.
+# The higher the false positives, the lower the precision. Because of the high cost to false positives in the first case, it would be 
+# worth having a low recall in order to have a ver high precision. In case 2, you would want more of a balance between precision and recall.
+# There's no hard and fast rule on what values of precision and recall you're shooting for. It always depends on the dataset and the application. 
+
+
 
 # %%
