@@ -611,4 +611,96 @@ print("F1 Score: ", f1_score(y_test, y_pred))
 # Our accuracy, precision, recall and F1 score values are actually very similar to the values when we used the entire dataset 
 # This is a sign our model is not overfit
 
+
+# Logistic Regression Threshold 
+# If you recall in Lesson 2, we talked about the trade-off between precision and recall. With a Logistic Regression mode, we have an 
+# easy way of shifting between emphazising precision and emphasizing recall. 
+# The Logistic Regression model doesn't just return a prediction, but it returns a probability value between 0 and 1. Tipically, we say if the
+# value is >=0.5, we predict the passenger survived, and if the value is <0.5, the passenger didn-t survive. However, we could choose any threshold between 0 and 1. 
+# If we make the theshold higher, we'll have fewer positive predictions, but our positive predictions are more likely to be correct. This means that the precision would
+# be higher and the recall lower. On the other hand, if we make the threshold lower, we'll have more positive predictions, so we're more likely to catch 
+# all the positive cases. This means that the recall would be higher and the precision lower.
+# --Each choice of a threshold is a diferent model. An ROC (Receiver operating characteristic) Curve is a graph showing 
+# all of the possible models and their performance--
+
+# Sensitivity & Specificity
+
+# An ROC Curve is a graph of the sensitivity vs. the specificity. These values demonstrate the same trade-off that precision and recall demonstrate.
+# Let’s look back at the Confusion Matrix, as we’ll be using it to define sensitivity and specificity.
+
+# Sensitivity = recall = #positives predicted correctly / #positive cases = TP/TP+FN
+# The specificity is the true negative rate. It's calculated as follows
+# Sécificity = #negatives predicted correctly / #negative cases = TN/TN+FP
+
+# We’ve done a train test split on our Titanic dataset and gotten the following confusion matrix. We have 96 positive cases and 126 negative cases in our test set.
+# TP = 61
+# FP = 21
+# FN = 35
+# TN = 105
+
+# Let’s calculate the sensitivity and specificity.
+# Sensitivity = 61/96 = 0.6354
+# Specificity = 105/126 = 0.8333
+
+# The goal is to maximize these two values, though generally making one larger makes the other lower. It will depend on the situation whether 
+# we put more emphasis on sensitivity or specificity.
+# While we generally look at precision and recall values, for graphing the standard is to use the sensitivity and specificity. 
+# It is possible to build a precision-recall curve, but this isn’t commonly done.
+
+
+# Sensitivity & Specificity in Scikit-learn
+# Scikit-learn has not defined functions for sensitivity and specificity, but we can do it ourselves. Sensitivity is the same as recall, so it is easy to define.
+from sklearn.metrics import recall_score
+sensitivity_score = recall_score
+print(sensitivity_score(y_test, y_pred)) 
+# 0.6829268292682927
+
+# Now, to define specificity, if we realize that it is also the recall of the negative class, we can get the value from the sklearn function 
+# precision_recall_fscore_support.
+
+# Let’s look at the output of precision_recall_fscore_support.
+from sklearn.metrics import precision_recall_fscore_support
+print(precision_recall_fscore_support(y, y_pred))
+
+# The second array is the recall, so we can ignore the other three arrays. There are two values. The first is the recall of the negative class and 
+# the second is the recall of the positive class. The second value is the standard recall or sensitivity value, and you can see the value matches 
+# what we got above. The first value is the specificity. So let’s write a function to get just that value.
+def specificity_score(y_true, y_pred):
+    p, r, f, s = precision_recall_fscore_support(y_true, y_pred)
+    return r[0]
+print(specificity_score(y_test, y_pred)) 
+# 0.9214285714285714
+
+# Note that in the code sample we use a random state in the train test split so that every time you run the code you will get the same results.
+
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import recall_score, precision_recall_fscore_support
+
+sensitivity_score = recall_score, precision_recall_fscore_support
+
+sensitivity_score = recall_score
+def spedificity_score(y_true, y_pred):
+        p, r, f, s = precision_recall_fscore_support(y_true, y_pred)
+        return r[0]
+
+df = pd.read_csv('https://sololearn.com/uploads/files/titanic.csv')
+df['Male'] = df['Sex'] == 'male'
+X = df[['Pclass', 'Male', 'Age', 'Siblings/Spouses', 'Parents/Children', 'Fare']].values
+y = df['Survived'].values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=5)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+print("Sensitivity: ", sensitivity_score(y_test, y_pred))
+print("Specificity: ", specificity_score(y_test, y_pred))
+
+# Sensitivity is the same as the recall (or recall of the positive class) 
+# and specificity is the recall of the negative class.
+
+
 # %%
