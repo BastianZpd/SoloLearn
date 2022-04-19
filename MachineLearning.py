@@ -1310,7 +1310,7 @@ model.predict([[3, False, 25, 0, 1, 2]])
 
 # The formula for gini is as follows. p is the percent of passengers who survived. Thus (1-p) is the percent of passengers who didn’t survive.
 
-# GINI = 2 x p x (1-p)
+# GINI = 2 * p * (1-p)
 
 # We can see that the maximum value is 0.5 when exactly 50% of the passengers in the set survived. 
 # If all the passengers survived or didn’t survive (percent is 0 or 1), then the value is 0.
@@ -1790,14 +1790,38 @@ print("best score: ", gs.best_score_)
 # on the randomness of how the points are distributed among the folds. Generally if we have multiple models with comparable performance, 
 # we’d choose the simpler model.
 
+# Computation
+
+# When talking about how much computation is required for a machine learning algorithm, we separate it into two questions: how much computation 
+# is required to build the model and how much is required to predict.
+
+# A decision tree is very computationally expensive to build. This is because at every node we are trying every single feature and threshold as a 
+# possible split. We have to calculate the information gain of each of these possible splits each time. This is computationally very expensive.
+
+# Predicting with a decision tree on the other hand, is computational very inexpensive. You just need to ask a series of yes/no questions about the 
+# datapoint to get to the prediction.
+# Generally we care much more about the computation time for prediction than training. Predictions often need to happen in real time while a user 
+# is waiting for a result.
+
+# Performance
+
+# Decision Trees can perform decently well depending on the data, though as we have discussed, they are prone to overfitting. 
+# Since a leaf node can have just one datapoint that lands there, it gives too much power to individual datapoints.
+
+# To remedy the overfitting issues, decision trees generally require some tuning to get the best possible model. 
+# Pruning techniques are used to limit the size of the tree and they help mitigate overfitting.
+# Decision Trees often take work to perform on par with how other models perform with no tuning.
+
+# Interpretability
 
 
+# The biggest reason that people like choosing decision trees is because they are easily interpretable. Depending on what you’re building a model for, 
+# you might need to give a reason why you made a certain prediction. A non-technical person can interpret a Decision Tree so it’s easy to give an 
+# explanation of a prediction.
 
-
-
-
-
-
+# This particularly comes into play in legal situations. Say you are a bank and have a model to predict whether a person should be given a loan or not. 
+# It is important to be able to explain why the model made the decision, otherwise you could hide discriminatory practices within the model.
+# Interpretability is the biggest advantage of Decision Trees. It will depend on the situation whether this is important for your problem.
 
 
 
